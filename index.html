@@ -1,0 +1,233 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fruity Palette</title>
+  <link rel="icon" type="image/png" href="/src/assets/fruity-palette-icon.png">
+  <link rel="stylesheet" href="/src/styles.css">
+  <script type="module" src="/src/main.ts"></script>
+</head>
+<body class="fr-window">
+  <header class="fr-titlebar fr-titlebar--glass">
+    <div class="fr-titlebar__drag" id="window-drag">
+      <img src="/src/assets/fruity-palette-icon.png" width="18" height="18" alt="">
+      <h1 class="fr-titlebar__title">Fruity Palette</h1>
+    </div>
+    <div class="fr-titlebar__controls" id="window-controls" hidden>
+      <button class="fr-caption" id="minimize" type="button" aria-label="Minimize"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 6h10"/></svg></button>
+      <button class="fr-caption fr-caption--close" id="close" type="button" aria-label="Close"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="m2 2 8 8m0-8-8 8"/></svg></button>
+    </div>
+  </header>
+  <div class="palette-scroll fr-glass-scrollbar"><main class="palette-workspace">
+    <div class="palette-editor">
+      <section class="fr-panel fr-panel--glass" aria-labelledby="picker-heading">
+        <div class="palette-tool-row picker-heading"><h2 class="fr-subheading" id="picker-heading">Color picker</h2><button class="fr-button fr-button--compact" id="eyedropper" type="button">Pick from screen</button></div>
+        <div class="fr-sv-picker" id="picker-area" role="group" tabindex="0" aria-label="Saturation and value" aria-describedby="picker-help picker-value"><span class="fr-sv-picker__marker"></span></div>
+        <div class="fr-field">
+          <div class="fr-action-notice" id="screen-pick-instructions" hidden>
+            <div class="fr-action-notice__body" role="status">
+              <p>Point at any screen color, even outside <span class="fr-badge screen-pick-brand">Fruity Palette</span>.</p>
+              <p>Press Space or Enter to sample.</p>
+              <p>Press Backspace or Esc to cancel.</p>
+            </div>
+            <button class="fr-button fr-button--compact fr-button--danger-hover" id="cancel-screen-pick" type="button">
+              <svg viewBox="0 0 12 12" aria-hidden="true"><path d="m2 2 8 8m0-8-8 8"/></svg>
+              Cancel
+            </button>
+          </div>
+          <p class="fr-sr-only" id="picker-help">Use the arrow keys to adjust saturation and value. Hold Shift for larger steps.</p><p class="fr-sr-only" id="picker-value"></p><label class="fr-label" for="hue">Hue</label>
+          <input class="fr-hue-slider" id="hue" type="range" min="0" max="359.999" step="any" value="196.3">
+        </div>
+        <div class="fr-well palette-preview">
+          <span class="fr-color-chip fr-color-chip--preview" aria-hidden="true"></span>
+          <span>Selected color <strong class="fr-mono" id="selected-hex">#00AEEF</strong></span>
+        </div>
+      <div class="palette-tool-row picker-history">
+        <button class="fr-button fr-button--compact" id="undo-color" type="button" disabled><span aria-hidden="true">↶</span> Undo</button>
+        <button class="fr-button fr-button--compact" id="redo-color" type="button" disabled><span aria-hidden="true">↷</span> Redo</button>
+      </div>
+        <p class="fr-status-strip" id="status" role="status"></p>
+      </section>
+      <section class="fr-panel fr-panel--glass" aria-labelledby="values-heading">
+        <h2 class="fr-subheading" id="values-heading">Color values</h2>
+        <div class="fr-field fr-field-divider">
+          <label class="fr-label" for="hex">HEX</label>
+          <input class="fr-input fr-mono" id="hex" value="#00AEEF" aria-describedby="hex-error"><p id="hex-error" class="fr-field-error" aria-live="polite"></p>
+        </div>
+        <fieldset class="fr-fieldset fr-field-divider">
+          <legend class="fr-legend">RGB</legend>
+          <div class="palette-channels">
+            <label class="fr-field"><span class="fr-label">Red</span><input class="fr-input fr-mono" id="red" aria-describedby="rgb-error" inputmode="numeric" value="0"></label>
+            <label class="fr-field"><span class="fr-label">Green</span><input class="fr-input fr-mono" id="green" aria-describedby="rgb-error" inputmode="numeric" value="174"></label>
+            <label class="fr-field"><span class="fr-label">Blue</span><input class="fr-input fr-mono" id="blue" aria-describedby="rgb-error" inputmode="numeric" value="239"></label>
+          </div><p class="fr-field-error" id="rgb-error" aria-live="polite"></p>
+        </fieldset>
+        <fieldset class="fr-fieldset fr-field-divider">
+          <legend class="fr-legend">HSL</legend>
+          <div class="palette-channels">
+            <label class="fr-field"><span class="fr-label">Hue (°)</span><input class="fr-input fr-mono" id="hsl-hue" aria-describedby="hsl-error" inputmode="decimal" value="196.3"></label>
+            <label class="fr-field"><span class="fr-label">Sat. (%)</span><input class="fr-input fr-mono" id="saturation" aria-describedby="hsl-error" inputmode="decimal" value="100"></label>
+            <label class="fr-field"><span class="fr-label">Light (%)</span><input class="fr-input fr-mono" id="lightness" aria-describedby="hsl-error" inputmode="decimal" value="46.9"></label>
+          </div><p class="fr-field-error" id="hsl-error" aria-live="polite"></p>
+        </fieldset>
+        <div class="palette-actions fr-field-divider">
+          <div class="fr-field">
+            <span class="fr-label" id="copy-format-label">Copy format</span>
+            <select id="copy-format" aria-labelledby="copy-format-label"><option>HEX</option><option>RGB</option><option>HSL</option></select>
+            <div class="fr-glass-select" id="copy-format-control" hidden>
+              <button class="fr-button fr-glass-select__trigger" type="button" id="copy-format-trigger" aria-labelledby="copy-format-label copy-format-value" aria-haspopup="listbox" aria-expanded="false" aria-controls="copy-format-menu"><span id="copy-format-value"></span><span aria-hidden="true">▾</span></button>
+              <div class="fr-glass-select__menu" id="copy-format-menu" role="listbox" aria-labelledby="copy-format-label" hidden></div>
+            </div>
+          </div>
+          <button class="fr-button fr-button--primary fr-button--hero" id="copy-color" type="button">Copy color</button>
+        </div>
+      </section>
+    </div>
+    <section class="fr-panel fr-panel--glass" aria-labelledby="palette-heading">
+      <div class="palette-actions palette-heading">
+        <h2 class="fr-subheading" id="palette-heading">Palette</h2>
+        <div class="fr-field"><span class="fr-label" id="harmony-label">Harmony</span><select id="harmony" aria-labelledby="harmony-label"><option>Complementary</option><option>Analogous</option><option>Triadic</option><option>Split-complementary</option><option>Monochromatic</option></select>
+          <div class="fr-glass-select" id="harmony-control" hidden>
+            <button class="fr-button fr-glass-select__trigger" type="button" id="harmony-trigger" aria-labelledby="harmony-label harmony-value" aria-haspopup="listbox" aria-expanded="false" aria-controls="harmony-menu"><span id="harmony-value"></span><span aria-hidden="true">▾</span></button>
+            <div class="fr-glass-select__menu" id="harmony-menu" role="listbox" aria-labelledby="harmony-label" hidden></div>
+          </div>
+        </div>
+      </div>
+      <div class="palette-swatches" id="swatches"></div>
+      <div class="palette-action-grid">
+        <div class="palette-action-fields">
+      <div class="palette-tool-row palette-copy-row">
+        <div class="fr-field">
+          <span class="fr-label" id="palette-copy-format-label">Palette format</span>
+          <select id="palette-copy-format" aria-labelledby="palette-copy-format-label"><option value="hex">HEX list</option><option value="css">CSS variables</option></select>
+          <div class="fr-glass-select" id="palette-copy-format-control" hidden>
+            <button class="fr-button fr-glass-select__trigger" type="button" id="palette-copy-format-trigger" aria-labelledby="palette-copy-format-label palette-copy-format-value" aria-haspopup="listbox" aria-expanded="false" aria-controls="palette-copy-format-menu"><span id="palette-copy-format-value"></span><span aria-hidden="true">▾</span></button>
+            <div class="fr-glass-select__menu" id="palette-copy-format-menu" role="listbox" aria-labelledby="palette-copy-format-label" hidden></div>
+          </div>
+        </div>
+        <button class="fr-button fr-button--primary fr-button--hero" id="copy-palette" type="button">Copy palette</button>
+      </div>
+          <form class="palette-tool-row" id="save-palette">
+            <label class="fr-field"><span class="fr-label">Palette name</span><input class="fr-input" id="palette-name" required maxlength="60"></label>
+            <button class="fr-button fr-button--primary fr-button--hero" type="submit">Save palette</button>
+          </form>
+        </div>
+        <div class="palette-output">
+          <button class="fr-button fr-button--primary fr-button--hero" id="export-png" type="button">Export PNG</button>
+        </div>
+      </div>
+      <template id="swatch-template">
+        <article class="fr-well palette-swatch">
+          <div class="fr-color-swatch" aria-hidden="true"></div>
+          <div class="palette-swatch-details">
+            <span><span class="swatch-role"></span><strong class="fr-mono"></strong></span>
+            <button class="fr-button fr-button--primary fr-button--compact" type="button">Copy</button>
+          </div>
+        </article>
+      </template>
+    </section>
+    <section class="fr-panel fr-panel--glass palette-tools" aria-label="Palette tools">
+      <details class="fr-disclosure fr-disclosure--glass"><summary>Recent colors</summary><div class="fr-disclosure__body palette-tool-row" id="recent-colors"></div></details>
+      <details class="fr-disclosure fr-disclosure--glass"><summary id="saved-palettes-summary">Saved palettes</summary><div class="fr-disclosure__body">
+        <p class="fr-help" id="saved-palettes-empty">No saved palettes yet.</p>
+        <ul id="saved-palettes" class="palette-saved"></ul>
+        <div class="palette-tool-row palette-library-actions">
+          <button class="fr-button fr-button--compact" id="backup-palettes" type="button">Back up JSON</button>
+          <button class="fr-button fr-button--compact" id="restore-palettes" type="button">Restore JSON</button>
+          <input type="file" id="restore-palettes-file" accept=".json,application/json" hidden>
+        </div>
+        <div class="palette-saved-actions">
+          <button class="fr-button fr-button--compact fr-button--danger-hover" id="delete-all-palettes" type="button" hidden>Delete all saved palettes</button>
+        </div>
+      </div></details>
+      <details class="fr-disclosure fr-disclosure--glass"><summary>Contrast checker</summary><div class="fr-disclosure__body">
+        <p class="fr-help contrast-help">Choose two palette colors to see how readable text is against the background.</p>
+        <div class="palette-tool-row contrast-controls">
+          <label>Text color <select class="fr-select" id="contrast-text"></select></label>
+          <label>Background color <select class="fr-select" id="contrast-background"></select></label>
+          <button class="fr-button fr-button--compact" id="contrast-swap" type="button" aria-label="Swap text and background colors"><span aria-hidden="true">⇄</span> Swap</button>
+        </div>
+        <div class="fr-contrast-sample" id="contrast-preview"><strong>Large text preview</strong><p>This line previews normal text.</p></div>
+        <div class="fr-well contrast-result" id="contrast-result" aria-live="polite"><strong id="contrast-ratio"></strong><span id="contrast-normal"></span><span id="contrast-large"></span></div>
+      </div></details>
+      <details class="fr-disclosure fr-disclosure--glass" id="image-picker"><summary>Pick from an image</summary><div class="fr-disclosure__body">
+        <div class="fr-dropzone fr-dropzone--inline palette-image-choose">
+          <img class="fr-file-icon" src="/src/assets/fruity-file.svg" width="52" height="52" alt="">
+          <div><h3>Local image</h3><p id="sample-filename"></p></div>
+          <button class="fr-button fr-button--primary fr-dropzone__choose" id="choose-image" type="button">Choose file… <span class="fr-button__arrow" aria-hidden="true">↗</span></button>
+          <input type="file" id="sample-file" accept="image/png,image/jpeg,image/webp,.png,.jpg,.jpeg,.webp" hidden>
+        </div>
+        <p class="fr-help" id="image-help">Choose a still PNG, JPEG, or WebP. Click a pixel or use the arrow keys and press Enter to sample it.</p>
+        <p class="fr-field-error" id="sample-error" role="status"></p>
+        <canvas id="sample-image" tabindex="0" aria-label="Image color picker" aria-describedby="image-help sample-position" hidden></canvas>
+        <p id="sample-position" class="fr-help"></p>
+      </div></details>
+    </section>
+    <footer class="fr-footer">
+      <div class="palette-footer-status"><span class="fr-footer__status"><span class="fr-statusbar__light" aria-hidden="true"></span>FruityUI <span id="footer-ui-version"></span></span></div>
+    <button class="fr-help-button" type="button" data-fr-open-dialog="about"><span aria-hidden="true">?</span> Help &amp; About</button></footer><textarea class="fr-input fr-mono" id="copy-fallback" aria-label="Value to copy manually" rows="4" readonly hidden></textarea>
+  </main></div>
+  <dialog class="fr-dialog fr-dialog--help" id="rename-palette-dialog" aria-labelledby="rename-palette-heading">
+    <header class="fr-dialog__header fr-about-header"><h2 id="rename-palette-heading">Rename palette</h2></header>
+    <form id="rename-palette-form">
+      <div class="fr-dialog__body"><label class="fr-field"><span class="fr-label">Palette name</span><input class="fr-input" id="rename-palette-name" required maxlength="60" autofocus></label></div>
+      <div class="fr-dialog__actions">
+        <button class="fr-button fr-button--danger-hover" type="button" id="cancel-rename-palette">Cancel</button>
+        <button class="fr-button fr-button--primary" type="submit">Save name</button>
+      </div>
+    </form>
+  </dialog>
+  <dialog class="fr-dialog fr-dialog--help" id="delete-palettes-dialog" aria-labelledby="delete-palettes-heading" aria-describedby="delete-palettes-description">
+    <header class="fr-dialog__header fr-about-header"><h2 id="delete-palettes-heading">Delete all saved palettes?</h2></header>
+    <div class="fr-dialog__body"><p id="delete-palettes-description"></p></div>
+    <form method="dialog" class="fr-dialog__actions">
+      <button class="fr-button" value="cancel" autofocus>Cancel</button>
+      <button class="fr-button fr-button--danger" value="delete">Delete all</button>
+    </form>
+  </dialog>
+  <dialog class="fr-dialog fr-dialog--help" id="about" aria-labelledby="about-heading">
+    <header class="fr-dialog__header fr-about-header">
+      <img src="/src/assets/fruity-palette-icon.png" width="60" height="60" alt="">
+      <div><h2 class="fr-subheading" id="about-heading">FruityPalette</h2><p class="fr-help">Pick a color and build a palette.</p></div>
+    </header>
+    <div class="fr-dialog__body">
+      <p>Create, compare, and save color palettes locally.</p>
+      <h3 class="fr-subheading">How to use</h3>
+      <ol class="palette-help-steps">
+        <li>Choose a color with the picker, enter HEX, RGB, or HSL values, or sample from the screen or an image.</li>
+        <li>Choose a harmony to generate matching colors. Open Contrast checker to compare two swatches.</li>
+        <li>Copy a color or the whole palette, export a PNG, or name and save the palette to reopen later.</li>
+      </ol>
+      <p class="fr-help">Use Back up JSON to save a copy of your library. Restore JSON adds missing palettes and keeps your existing ones.</p>
+      <dl class="fr-shortcuts">
+        <div><dt>Adjust the picker</dt><dd><kbd class="fr-key">Arrow keys</kbd></dd></div>
+        <div><dt>Adjust in larger steps</dt><dd><kbd class="fr-key">Shift</kbd> + <kbd class="fr-key">Arrow keys</kbd></dd></div>
+        <div><dt>Restore the last valid value</dt><dd><kbd class="fr-key">Esc</kbd></dd></div>
+      </dl>
+      <p class="fr-help">Created by George Kapsalakos.<br>FruityPalette <span id="app-version"></span> · MIT License · Part of the Fruity Suite<br>FruityUI <span id="ui-version"></span> · MIT License</p>
+      <details class="fr-disclosure">
+        <summary>Licenses and notices</summary>
+        <div class="fr-disclosure__body">
+          <div class="palette-license-list">
+            <section aria-label="FruityPalette license"><h3 class="fr-subheading">FruityPalette</h3><pre class="palette-license fr-mono" id="app-license"></pre></section>
+            <section aria-label="FruityUI license"><h3 class="fr-subheading">FruityUI</h3><pre class="palette-license fr-mono" id="ui-license"></pre></section>
+          </div>
+        </div>
+      </details>
+    </div>
+    <form method="dialog" class="fr-dialog__actions"><button type="submit" class="fr-button fr-button--primary" autofocus>Done</button></form>
+  </dialog>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+

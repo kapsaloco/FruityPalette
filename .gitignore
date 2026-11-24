@@ -1,0 +1,85 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+dist-showcase
+*.local
+
+# Editor directories and files
+.vscode/
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Local environment files (keep shareable examples)
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Local registry credentials, key material, and signing files
+.npmrc
+.netrc
+.git-credentials
+/.aws/
+/.ssh/
+/.cargo/credentials
+/.cargo/credentials.toml
+/.secrets/
+*.pem
+*.key
+*.pfx
+*.p12
+*.jks
+*.keystore
+
+# TypeScript and Vite caches
+*.tsbuildinfo
+.vite/
+.cache/
+.npm/
+
+# Test reports and coverage
+coverage/
+playwright-report/
+test-results/
+
+# Windows metadata
+Thumbs.db
+Desktop.ini
+
+# Internal planning and local workspace files
+/Documentation.md
+/docs/internal/
+/.agents/
+/.codex/
+
+# Local release and packaging outputs
+/artifacts/
+/release/
+/releases/
+/target/
+*.msi
+*-setup.exe
+*.pdb
+*.dmp
+
+# Personal exports written into the workspace
+FruityPalette-backup*.json
+FruityPalette-complementary*.png
+FruityPalette-analogous*.png
+FruityPalette-triadic*.png
+FruityPalette-split-complementary*.png
+FruityPalette-monochromatic*.png

@@ -1,0 +1,18 @@
+{
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "Fruity Palette",
+        "width": 900,
+        "height": 740,
+        "visible": false,
+        "minWidth": 680,
+        "minHeight": 520,
+        "decorations": false
+      }
+    ]
+  }
+}
+
+
